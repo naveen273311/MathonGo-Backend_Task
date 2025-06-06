@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { createClient } = require("redis");
 const app = require("./app");
 
-const PORT = process.env.PORT || 1000;
+const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 const REDIS_URL = process.env.REDIS_URL;
 

@@ -1,15 +1,20 @@
-// middlewares/rateLimiter.js
 const rateLimit = require("express-rate-limit");
-const RedisStoreImport = require("rate-limit-redis"); 
-const redisClient = require("../redis/redisClient");
+const Redis = require("ioredis");
+const RedisStoreImport = require("rate-limit-redis"); // <-- Import here
 
-const RedisStore = RedisStoreImport.default; 
+require("dotenv").config();
+
+const RedisStore = RedisStoreImport.default || RedisStoreImport; // fallback if .default undefined
+
+const redisClient = new Redis(process.env.REDIS_URL, {
+  tls: true,
+});
 
 const limiter = rateLimit({
   store: new RedisStore({
-    sendCommand: (...args) => redisClient.sendCommand(args),
+    sendCommand: (...args) => redisClient.call(...args),
   }),
-  windowMs: 1 * 60 * 1000, // 1 minute
+  windowMs: 1 * 60 * 1000,
   max: 30,
   standardHeaders: true,
   legacyHeaders: false,
